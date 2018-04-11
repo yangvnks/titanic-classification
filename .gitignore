@@ -1,1 +1,8 @@
 
+# Datasets #
+/Data
+.csv
+
+# OS generated files #
+.DS_Store
+.DS_Store?
