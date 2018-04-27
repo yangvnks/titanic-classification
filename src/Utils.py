@@ -1,4 +1,3 @@
-%matplotlib inline
 import matplotlib.pyplot as plt
 import matplotlib 
 import numpy as np
@@ -91,3 +90,10 @@ def plot_cv_parameters(classifier,X_train,y_train,param, param_range,cv=10):
     plt.legend(loc='lower right')
     plt.ylim([0.6 ,1.1])
     plt.show()
+
+def train_test_separator(train_df):
+    y = np.asarray(train_df['Survived'])
+    X = train_df
+    X = X.drop(['Survived','Name'], axis=1)
+    X = np.asarray(X)
+    return X,y
