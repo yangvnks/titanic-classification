@@ -91,14 +91,15 @@ def plot_cv_parameters(classifier,X_train,y_train,param, param_range,cv=10):
     plt.ylim([0.6 ,1.1])
     plt.show()
 
-def plot_feature_importance(X,importance,indices):
+def plot_feature_importance(X,importances,indices,feat_labels):
     plt.title('Feature importance')
     plt.bar(range(X.shape[1]),
              importance[indices],
              align='center')
     plt.xticks(range(X.shape[1]),
+                feat_labels,
                 rotation=90)
-    plt.xlim([-1,X.shape[0]])
+    plt.xlim([-1,X.shape[1]])
     plt.tight_layout()
     plt.show()
 
