@@ -94,7 +94,7 @@ def plot_cv_parameters(classifier,X_train,y_train,param, param_range,cv=10):
 def plot_feature_importance(X,importances,indices,feat_labels):
     plt.title('Feature importance')
     plt.bar(range(X.shape[1]),
-             importance[indices],
+             importances[indices],
              align='center')
     plt.xticks(range(X.shape[1]),
                 feat_labels,
