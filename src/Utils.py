@@ -91,6 +91,17 @@ def plot_cv_parameters(classifier,X_train,y_train,param, param_range,cv=10):
     plt.ylim([0.6 ,1.1])
     plt.show()
 
+def plot_feature_importance(X,importance,indices):
+    plt.title('Feature importance')
+    plt.bar(range(X.shape[1]),
+             importance[indices],
+             align='center')
+    plt.xticks(range(X.shape[1]),
+                rotation=90)
+    plt.xlim([-1,X.shape[0]])
+    plt.tight_layout()
+    plt.show()
+
 def train_test_separator(train_df):
     y = np.asarray(train_df['Survived'])
     X = train_df.drop(['Survived'], axis=1)
