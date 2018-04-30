@@ -1,0 +1,195 @@
+{
+ "cells": [
+  {
+   "cell_type": "code",
+   "execution_count": 42,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import numpy as np\n",
+    "import pandas as pd\n",
+    "from pandas import Series, DataFrame\n",
+    "import pickle\n",
+    "from sklearn.model_selection import cross_val_score,train_test_split\n",
+    "from sklearn.metrics import accuracy_score\n",
+    "import warnings\n",
+    "import src.Utils as utils\n",
+    "from sklearn import metrics\n",
+    "\n",
+    "import sklearn.ensemble as ske\n",
+    "from sklearn import svm\n",
+    "from sklearn.linear_model import LogisticRegression\n",
+    "from sklearn.ensemble import VotingClassifier\n",
+    "\n",
+    "#hack to avoid showing deprecationg warnings\n",
+    "warnings.filterwarnings(\"ignore\", category=DeprecationWarning) \n",
+    "warnings.filterwarnings(\"ignore\", category=FutureWarning) \n",
+    "\n",
+    "# Environment settings\n",
+    "data_path = 'Data/'\n",
+    "\n",
+    "# Deserialize previously saved data from \"preprocessing\"\n",
+    "with open(data_path+'train_pp.obj', 'rb') as train_pp, \\\n",
+    "open(data_path+'test_pp.obj', 'rb') as test_pp:\n",
+    "    train_df = pickle.load(train_pp)\n",
+    "    test_df = pickle.load(test_pp)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 43,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "#Separate training set from target variables\n",
+    "passengerIds = test_df['PassengerId'].values\n",
+    "train_df=train_df.drop(['PassengerId'],axis=1)\n",
+    "test_df=test_df.drop(['PassengerId'],axis=1)\n",
+    "X,y = utils.train_test_separator(train_df)\n",
+    "#Create training set and test set with split 0.3\n",
+    "X_train , X_test ,y_train,y_test = train_test_split(X,\n",
+    "                                                    y, \n",
+    "                                                    test_size=0.3, \n",
+    "                                                    random_state=1, \n",
+    "                                                    stratify=y)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 44,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "model_rf = ske.RandomForestClassifier(n_estimators=50,\n",
+    "                                criterion='entropy',\n",
+    "                                max_depth = 5,\n",
+    "                                max_features = 6,\n",
+    "                                bootstrap=True).fit(X_train,y_train)\n",
+    "\n",
+    "model_svm= svm.SVC(C=100,\n",
+    "                  gamma=0.01,\n",
+    "                  kernel='rbf').fit(X_train,y_train)\n",
+    "\n",
+    "model_log=LogisticRegression().fit(X_train,y_train)\n",
+    "\n",
+    "# voting_clf = VotingClassifier(estimators=[('Random Forest', model_rf), \n",
+    "#                                          ('Support Vector machine', model_svm), \n",
+    "#                                          ('Logistic Regression', model_log)], \n",
+    "#                              voting='hard').fit(X,y)\n",
+    "\n",
+    "models={'Random Forest': model_rf,\n",
+    "        'Support Vector Machine': model_svm,\n",
+    "        'Logistic Regression': model_log}\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 45,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "RF score: 0.867564534231201\n",
+      "SVM score: 0.8451178451178452\n",
+      "LR score: 0.8125701459034792\n",
+      "Ensemble score: 0.8462401795735129\n"
+     ]
+    }
+   ],
+   "source": [
+    "pred_rf = model_rf.predict(X)\n",
+    "pred_svm = model_svm.predict(X)\n",
+    "pred_log = model_log.predict(X)\n",
+    "\n",
+    "print(\"RF score: {}\".format(metrics.accuracy_score(y,pred_rf)))\n",
+    "print(\"SVM score: {}\".format(metrics.accuracy_score(y,pred_svm)))\n",
+    "print(\"LR score: {}\".format(metrics.accuracy_score(y,pred_log)))\n",
+    "\n",
+    "pred_rf = pred_rf.astype(int)\n",
+    "pred_svm = pred_svm.astype(int)\n",
+    "pred_log = pred_log.astype(int)\n",
+    "\n",
+    "p_avg = []\n",
+    "for i in range(len(y)):\n",
+    "    avg = (pred_rf[i]+pred_svm[i]+pred_log[i])/3\n",
+    "    if avg >= 0.50:\n",
+    "        p_avg.append(1)\n",
+    "    else:\n",
+    "        p_avg.append(0)\n",
+    "\n",
+    "print(\"Ensemble score: {}\".format(metrics.accuracy_score(y,p_avg)))\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 47,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "#Prediction on real test set using random forest\n",
+    "model_rf.fit(X,y)\n",
+    "model_svm.fit(X,y)\n",
+    "model_log.fit(X,y)\n",
+    "\n",
+    "pred_rf = model_rf.predict(test_df).astype(int)\n",
+    "pred_svm = model_svm.predict(test_df).astype(int)\n",
+    "pred_log = model_log.predict(test_df).astype(int)\n",
+    "\n",
+    "ens_avg = []\n",
+    "for i in range(len(test_df)):\n",
+    "    avg = (pred_rf[i]+pred_svm[i]+pred_log[i])/3\n",
+    "    if avg >= 0.60:\n",
+    "        ens_avg.append(1)\n",
+    "    else:\n",
+    "        ens_avg.append(0)\n",
+    "\n",
+    "result_df = pd.DataFrame(data={'PassengerId': passengerIds,\n",
+    "                               'Survived': ens_avg})\n",
+    "result_df['Survived'] = [0 if x == False else 1 for x in result_df['Survived']]\n",
+    "#Create output csv file\n",
+    "result_df.to_csv(data_path+\"outputs/Ensemble_rf_svm_log.csv\", index=False)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 15,
+   "metadata": {
+    "collapsed": true
+   },
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "collapsed": true
+   },
+   "outputs": [],
+   "source": []
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.6.2"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 2
+}
