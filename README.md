@@ -1,6 +1,6 @@
 # Titanic survivor classification challenge
 Titanic classification [challenge on Kaggle](https://www.kaggle.com/c/titanic).
-Given a dataset of a subset of the Titanic's passengers predict wheter they will survive or not.
+Given a dataset of a subset of the Titanic's passengers predict whether they will survive or not.
 
 ## Credits
 * Claudia Chianella ([@clauchian](https://github.com/clauchian))
@@ -32,7 +32,7 @@ Classification techniques together with the relative scores.
 ## Folder structures
 * `\` contains all of the jupyter's notebooks including classifiers, preprocessing and data visualization
 * `\Data` contains the project dataset given in the Kaggle challenge
-* `\Data\output` contains the outputs given by the classifiers that were submitted to Kaggle
+* `\Data\outputs` contains the outputs given by the classifiers that were submitted to Kaggle
 
 ## Installation instructions
 1. Install Python and clone this repository
