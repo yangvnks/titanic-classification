@@ -23,11 +23,10 @@ Classification techniques together with the relative scores.
 | *KNN* | - | - | - |
 | *Logistic Regression* | - | - | - |
 | *Neural Networks* | - | - | - |
-| *Random Forest* | - | - | - |
+| *Random Forest* | 0.82 | 0.84 | 0.79425 |
 | *Support Vector Machines* | 0.85 | 0.84 | 0.80861 |
 | *Perceptron* | 0.78 | - | 0.62679 |
 | *Naive Bayes* | 0.78 | 0.80 | 0.76076 |
-| *Ensemble (RF+SVM+LR)* | - | - | - |
 
 ## Folder structures
 * `\` contains all of the jupyter's notebooks including classifiers, preprocessing and data visualization
