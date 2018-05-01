@@ -21,7 +21,7 @@ Classification techniques together with the relative scores.
 | Classifier | Test set score | CV score | Kaggle score |
 | ------ |:------:|:------:|:------:|
 | *KNN* | - | - | - |
-| *Logistic Regression* | - | - | - |
+| *Logistic Regression* | - | 0.82 | 0.78947 |
 | *Neural Networks* | - | - | - |
 | *Random Forest* | 0.82 | 0.84 | 0.79425 |
 | *Support Vector Machines* | 0.85 | 0.84 | 0.80861 |
