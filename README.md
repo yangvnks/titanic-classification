@@ -4,7 +4,7 @@ Given a dataset of a subset of the Titanic's passengers predict whether they wil
 
 ## Credits
 * Claudia Chianella ([@clauchian](https://github.com/clauchian))
-* Yannick Giovanakis ([@yangi92](https://github.com/yangi92))
+* Yannick Giovanakis ([@yangvnks](https://github.com/yangvnks))
 * Flavio Primo ([@flaprimo](https://github.com/flaprimo/))
 * Francesco Zinnari ([@FrancescoZinnari](https://github.com/FrancescoZinnari))
 
